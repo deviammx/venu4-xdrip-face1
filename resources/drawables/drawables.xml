@@ -2,11 +2,15 @@
     <bitmap id="LauncherIcon" filename="launcher_icon.png" />
     <bitmap id="BackgroundImage1" filename="background_1.png" />
     <bitmap id="BackgroundImage2" filename="background_2.png" />
-    <bitmap id="BackgroundImage3" filename="background_3.png" />
     <bitmap id="TrendUp" filename="arrow_up.png" />
     <bitmap id="TrendUpRight" filename="arrow_up_right.png" />
     <bitmap id="TrendRight" filename="arrow_right.png" />
     <bitmap id="TrendDownRight" filename="arrow_down_right.png" />
     <bitmap id="TrendDown" filename="arrow_down.png" />
     <bitmap id="TrendTransparent" filename="arrow_transparent.png" />
+    <bitmap id="Battery100" filename="Battery_100.png" />
+    <bitmap id="Battery75" filename="Battery_75.png" />
+    <bitmap id="Battery50" filename="Battery_50.png" />
+    <bitmap id="Battery25" filename="Battery_25.png" />
+    <bitmap id="BatteryLow" filename="Battery_low.png" />
 </resources>

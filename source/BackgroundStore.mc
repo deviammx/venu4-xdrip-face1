@@ -21,8 +21,6 @@ module BackgroundStore {
             bitmap = WatchUi.loadResource(Rez.Drawables.BackgroundImage1) as WatchUi.BitmapResource;
         } else if (index == 2) {
             bitmap = WatchUi.loadResource(Rez.Drawables.BackgroundImage2) as WatchUi.BitmapResource;
-        } else if (index == 3) {
-            bitmap = WatchUi.loadResource(Rez.Drawables.BackgroundImage3) as WatchUi.BitmapResource;
         }
 
         if (bitmap != null) {
