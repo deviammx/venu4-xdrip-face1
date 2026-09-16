@@ -1,0 +1,5 @@
+<properties>
+    <property id="BackgroundIndex" type="number">1</property>
+    <property id="XdripBaseUrl" type="string">http://127.0.0.1</property>
+    <property id="XdripBasePort" type="string">17580</property>
+</properties>

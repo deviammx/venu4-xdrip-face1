@@ -1,0 +1,17 @@
+<settings>
+    <setting propertyKey="@Properties.BackgroundIndex" title="@Strings.SettingBackgroundTitle">
+            <settingConfig type="list">
+                <listEntry value="0">@Strings.SettingBackgroundNone</listEntry>
+                <listEntry value="1">@Strings.SettingBackgroundForest</listEntry>
+                <listEntry value="2">@Strings.SettingBackgroundPeaks</listEntry>
+                <listEntry value="3">@Strings.SettingBackgroundConfetti</listEntry>
+            </settingConfig>
+        </setting>
+
+        <setting propertyKey="@Properties.XdripBaseUrl" title="@Strings.SettingXdripBaseUrlTitle">
+            <settingConfig type="alphaNumeric" />
+        </setting>
+        <setting propertyKey="@Properties.XdripBasePort" title="@Strings.SettingXdripBasePortTitle">
+            <settingConfig type="alphaNumeric" />
+        </setting>
+</settings>

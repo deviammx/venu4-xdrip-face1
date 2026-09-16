@@ -14,7 +14,8 @@ import Toybox.Lang;
 (:background)
 module GlucoseConfig {
     const DEFAULT_BASE_URL = "http://127.0.0.1";
-    const PORT_AND_PATH = ":17581/pebble";
+    const DEFAULT_BASE_PORT = "17580";
+    const API_PATH = "/pebble";
 
     // Minimum enforced by Background.registerForTemporalEvent() is 5 minutes.
     const REFRESH_SECONDS = 300;
@@ -24,6 +25,19 @@ module GlucoseConfig {
         if (baseUrl == null || baseUrl.length() == 0) {
             baseUrl = DEFAULT_BASE_URL;
         }
-        return baseUrl + PORT_AND_PATH;
+        if (baseUrl.find("://") == null) {
+            baseUrl = "http://" + baseUrl;
+        }
+
+        // Strip a trailing slash so it can't collide with the port/path we append.
+        if (baseUrl.substring(baseUrl.length() - 1, baseUrl.length()).equals("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+
+        // An empty/unset port falls back to xDrip+'s default HTTP port.
+        var basePort = Properties.getValue("XdripBasePort") as String?;
+        var portSegment = (basePort != null && basePort.length() > 0) ? (":" + basePort) : (":" + DEFAULT_BASE_PORT);
+
+        return baseUrl + portSegment + API_PATH;
     }
 }

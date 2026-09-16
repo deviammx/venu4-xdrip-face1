@@ -1,3 +1,10 @@
 <resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <string id="AppName">Venu4 Face</string>
+    <string id="AppName">Venu4 xDrip+ Face</string>
+    <string id="SettingBackgroundTitle">Background</string>
+    <string id="SettingBackgroundNone">None (black)</string>
+    <string id="SettingBackgroundForest">Sunset Forest</string>
+    <string id="SettingBackgroundPeaks">Sunset Peaks</string>
+    <string id="SettingBackgroundConfetti">Confetti Burst</string>
+    <string id="SettingXdripBaseUrlTitle">xDrip+ Base URL</string>
+    <string id="SettingXdripBasePortTitle">xDrip+ Base Port</string>
 </resources>

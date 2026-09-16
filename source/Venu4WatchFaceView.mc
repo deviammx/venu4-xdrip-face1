@@ -17,6 +17,12 @@ class Venu4WatchFaceView extends WatchUi.WatchFace {
     private const DIM_COLOR = 0x8A8A8A;
     private const BG_COLOR = Graphics.COLOR_BLACK;
 
+    private const TIME_FONT = Graphics.FONT_NUMBER_HOT;
+    private const DATE_FONT = Graphics.FONT_TINY; // ~20% smaller than FONT_SMALL, closest built-in size
+    private const ROW_GAP = 3;
+    private const STATS_GAP = 10; // pulled up closer to the time block
+    private const TOP_SAFE_MARGIN = 36; // keeps the top row clear of the round bezel
+
     public function initialize() {
         WatchFace.initialize();
     }
@@ -46,10 +52,21 @@ class Venu4WatchFaceView extends WatchUi.WatchFace {
 
         drawBackground(dc, width, height);
 
-        drawGlucose(dc, centerX, centerY);
-        drawDate(dc, centerX, centerY);
-        drawTime(dc, centerX, centerY);
-        drawStats(dc, centerX, centerY);
+        // Time is vertically centered on the screen at its full (unchanged) size.
+        var timeFontHeight = Graphics.getFontHeight(TIME_FONT);
+        var timeY = centerY - (timeFontHeight / 2);
+
+        // Glucose and date are built top-down from a fixed safe margin so they
+        // can never overlap each other, regardless of font metrics.
+        var glucoseY = TOP_SAFE_MARGIN;
+        var glucoseFontHeight = Graphics.getFontHeight(Graphics.FONT_SMALL);
+
+        var dateY = glucoseY + glucoseFontHeight + ROW_GAP;
+
+        drawGlucose(dc, centerX, glucoseY);
+        drawDate(dc, centerX, dateY);
+        drawTime(dc, centerX, timeY);
+        drawStats(dc, centerX, timeY + timeFontHeight + STATS_GAP);
     }
 
     private function drawBackground(dc as Dc, width as Number, height as Number) as Void {
@@ -65,28 +82,40 @@ class Venu4WatchFaceView extends WatchUi.WatchFace {
         dc.drawBitmap(0, 0, bitmap);
     }
 
-    private function drawGlucose(dc as Dc, centerX as Number, centerY as Number) as Void {
-        var y = centerY - 140;
-
-        if (GlucoseStore.isOk()) {
-            var text = Lang.format("$1$  $2$  $3$", [GlucoseStore.getSgvText(), GlucoseStore.getDeltaText(), GlucoseStore.getArrow()]);
-            dc.setColor(ACCENT_COLOR, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(centerX, y, Graphics.FONT_SMALL, text, Graphics.TEXT_JUSTIFY_CENTER);
-        } else {
+    private function drawGlucose(dc as Dc, centerX as Number, y as Number) as Void {
+        if (!GlucoseStore.isOk()) {
             dc.setColor(DIM_COLOR, Graphics.COLOR_TRANSPARENT);
             dc.drawText(centerX, y, Graphics.FONT_SMALL, GlucoseStore.getStatusText(), Graphics.TEXT_JUSTIFY_CENTER);
+            return;
         }
+
+        // sgv | trend icon | delta, icon centered on the line.
+        var icon = TrendIconStore.getBitmap(GlucoseStore.getTrendIcon());
+        var iconScale = 0.7; // reduced 30% from native size
+        var iconWidth = (icon.getWidth() * iconScale).toNumber();
+        var iconHeight = (icon.getHeight() * iconScale).toNumber();
+        var iconHalfWidth = iconWidth / 2;
+        var gap = 10;
+
+        var textCenterY = y + (Graphics.getFontHeight(Graphics.FONT_SMALL) / 2);
+        var iconY = textCenterY - (iconHeight / 2);
+
+        dc.setColor(TEXT_COLOR, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(centerX - iconHalfWidth - gap, y, Graphics.FONT_SMALL, GlucoseStore.getSgvText(), Graphics.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(centerX + iconHalfWidth + gap, y, Graphics.FONT_SMALL, GlucoseStore.getDeltaText(), Graphics.TEXT_JUSTIFY_LEFT);
+
+        dc.drawScaledBitmap(centerX - iconHalfWidth, iconY, iconWidth, iconHeight, icon);
     }
 
-    private function drawDate(dc as Dc, centerX as Number, centerY as Number) as Void {
+    private function drawDate(dc as Dc, centerX as Number, y as Number) as Void {
         var now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var dateText = Lang.format("$1$, $2$ $3$", [now.day_of_week, now.month, now.day]);
 
         dc.setColor(ACCENT_COLOR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX, centerY - 92, Graphics.FONT_MEDIUM, dateText.toUpper(), Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(centerX, y, DATE_FONT, dateText.toUpper(), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
-    private function drawTime(dc as Dc, centerX as Number, centerY as Number) as Void {
+    private function drawTime(dc as Dc, centerX as Number, y as Number) as Void {
         var clockTime = System.getClockTime();
         var hour = clockTime.hour;
 
@@ -100,11 +129,10 @@ class Venu4WatchFaceView extends WatchUi.WatchFace {
         var timeText = Lang.format("$1$:$2$", [hour.format("%02d"), clockTime.min.format("%02d")]);
 
         dc.setColor(TEXT_COLOR, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX, centerY - 40, Graphics.FONT_NUMBER_HOT, timeText, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(centerX, y, TIME_FONT, timeText, Graphics.TEXT_JUSTIFY_CENTER);
     }
 
-    private function drawStats(dc as Dc, centerX as Number, centerY as Number) as Void {
-        var y = centerY + 78;
+    private function drawStats(dc as Dc, centerX as Number, y as Number) as Void {
         var colWidth = 110;
 
         drawStat(dc, centerX - colWidth, y, "HR", getHeartRateText());

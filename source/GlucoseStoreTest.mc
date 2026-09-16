@@ -36,25 +36,25 @@ function testGlucoseStoreSuccess(logger as Logger) as Boolean {
     Test.assertEqual(GlucoseStore.isOk(), true);
     Test.assertEqualMessage(GlucoseStore.getSgvText(), "128", "sgv should use first (most recent) entry");
     Test.assertEqualMessage(GlucoseStore.getDeltaText(), "+1", "positive delta should get a + sign");
-    Test.assertEqualMessage(GlucoseStore.getArrow(), "-", "Flat should map to -");
+    Test.assertEqualMessage(GlucoseStore.getTrendIcon(), Rez.Drawables.TrendRight, "Flat should map to the right-arrow icon");
     return true;
 }
 
 (:test)
 function testGlucoseStoreNegativeDeltaAndArrows(logger as Logger) as Boolean {
     var cases = [
-        ["DoubleUp", "^^"],
-        ["SingleUp", "^"],
-        ["FortyFiveUp", "/"],
-        ["FortyFiveDown", "\\"],
-        ["SingleDown", "v"],
-        ["DoubleDown", "vv"],
-        ["NOT COMPUTABLE", "?"]
+        ["DoubleUp", Rez.Drawables.TrendUp],
+        ["SingleUp", Rez.Drawables.TrendUp],
+        ["FortyFiveUp", Rez.Drawables.TrendUpRight],
+        ["FortyFiveDown", Rez.Drawables.TrendDownRight],
+        ["SingleDown", Rez.Drawables.TrendDown],
+        ["DoubleDown", Rez.Drawables.TrendDown],
+        ["NOT COMPUTABLE", Rez.Drawables.TrendTransparent]
     ];
 
     for (var i = 0; i < cases.size(); i += 1) {
         var direction = cases[i][0];
-        var expectedArrow = cases[i][1];
+        var expectedIcon = cases[i][1];
 
         var data = {
             "bgs" => [
@@ -66,7 +66,7 @@ function testGlucoseStoreNegativeDeltaAndArrows(logger as Logger) as Boolean {
         Test.assertEqualMessage(GlucoseStore.isOk(), true, "should be ok for direction " + direction);
         Test.assertEqualMessage(GlucoseStore.getSgvText(), "95", "numeric sgv should format cleanly");
         Test.assertEqualMessage(GlucoseStore.getDeltaText(), "-4", "negative delta keeps its own minus sign");
-        Test.assertEqualMessage(GlucoseStore.getArrow(), expectedArrow, "direction " + direction + " should map to " + expectedArrow);
+        Test.assertEqualMessage(GlucoseStore.getTrendIcon(), expectedIcon, "direction " + direction + " should map to the right icon");
     }
     return true;
 }

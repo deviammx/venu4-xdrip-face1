@@ -9,7 +9,7 @@ module GlucoseStore {
     var status as Symbol = :noConnection;
     var sgvText as String = "";
     var deltaText as String = "";
-    var arrow as String = "?";
+    var trendIcon as ResourceId = Rez.Drawables.TrendTransparent;
 
     function ingest(responseCode as Number, data) as Void {
         if (responseCode != 200) {
@@ -34,7 +34,7 @@ module GlucoseStore {
 
         sgvText = formatValue(sgv, false);
         deltaText = formatValue(delta, true);
-        arrow = arrowFor(direction);
+        trendIcon = iconFor(direction);
         status = :ok;
     }
 
@@ -58,8 +58,8 @@ module GlucoseStore {
         return deltaText;
     }
 
-    function getArrow() as String {
-        return arrow;
+    function getTrendIcon() as ResourceId {
+        return trendIcon;
     }
 
     function extractLatestEntry(data) as Dictionary? {
@@ -106,25 +106,21 @@ module GlucoseStore {
         return text;
     }
 
-    function arrowFor(direction) as String {
+    function iconFor(direction) as ResourceId {
         if (!(direction instanceof String)) {
-            return "?";
+            return Rez.Drawables.TrendTransparent;
         }
-        if (direction.equals("DoubleUp")) {
-            return "^^";
-        } else if (direction.equals("SingleUp")) {
-            return "^";
+        if (direction.equals("DoubleUp") || direction.equals("SingleUp")) {
+            return Rez.Drawables.TrendUp;
         } else if (direction.equals("FortyFiveUp")) {
-            return "/";
+            return Rez.Drawables.TrendUpRight;
         } else if (direction.equals("Flat")) {
-            return "-";
+            return Rez.Drawables.TrendRight;
         } else if (direction.equals("FortyFiveDown")) {
-            return "\\";
-        } else if (direction.equals("SingleDown")) {
-            return "v";
-        } else if (direction.equals("DoubleDown")) {
-            return "vv";
+            return Rez.Drawables.TrendDownRight;
+        } else if (direction.equals("SingleDown") || direction.equals("DoubleDown")) {
+            return Rez.Drawables.TrendDown;
         }
-        return "?";
+        return Rez.Drawables.TrendTransparent;
     }
 }
